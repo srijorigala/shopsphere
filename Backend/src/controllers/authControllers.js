@@ -1,6 +1,7 @@
 const bcrypt= require("bcrypt")
 const jwt= require("jsonwebtoken")
 const User= require("../models/user.js")
+const authMiddleware=require("../middleware/authMiddleware.js")
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -88,7 +89,43 @@ try {
     });
   }
 };
+const getProfile= async (req,res)=>{
+  try {
+    const userId=req.user.userId
+  const user=await User.findById(userId)
+  if(!user)
+  {
+    return res.status(404).json({
+      message:"user not found"
+    })
+  }
+  return res.status(200).json({
+    message: "profile fetched successfully",
+    data: {
+  id: user._id,
+  name: user.name,
+  email: user.email,
+  role: user.role
+}
+  })
+  } catch (error) {
+    res.status(500).json({
+      message: "Something went wrong"
+    });
+  }
+  
+}
+const logoutUser = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
 
+  return res.status(200).json({
+    message: "Logout successful",
+  });
+};
 module.exports = {
-  registerUser,loginUser
+  registerUser,loginUser,getProfile,logoutUser
 };
