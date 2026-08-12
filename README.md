@@ -8,3 +8,6 @@ A full-stack e-commerce application built with React, Node.js, Express, and Mong
 - Node.js
 - Express.js
 - MongoDB
+integrated front end and backend using axios
+resolved cors error 
+registeration successfull

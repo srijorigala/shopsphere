@@ -1,4 +1,5 @@
 import { useState } from "react"
+import axios from "axios"
 
 const Register = () => {
   const [name, setName] = useState("")
@@ -6,12 +7,14 @@ const Register = () => {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [error, setError] = useState("")
+  const [success, setSuccess] = useState("")
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
-    // Clear previous error
     setError("")
+    setSuccess("")
 
     // Required fields validation
     if (!name || !email || !password || !confirmPassword) {
@@ -39,7 +42,40 @@ const Register = () => {
       return
     }
 
-    console.log("Form is valid")
+    try {
+      setLoading(true)
+
+      const response = await axios.post(
+        "http://localhost:5001/api/auth/register",
+        {
+          name,
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      )
+
+      console.log(response.data)
+
+      setSuccess("Registration successful")
+
+      // Clear form
+      setName("")
+      setEmail("")
+      setPassword("")
+      setConfirmPassword("")
+    } catch (error) {
+      console.error(error)
+
+      setError(
+        error.response?.data?.message ||
+        "Registration failed. Please try again."
+      )
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -52,9 +88,9 @@ const Register = () => {
           Register
         </h1>
 
-        
-
-        <label htmlFor="name">Name:</label>
+        <label htmlFor="name">
+          Name:
+        </label>
 
         <input
           id="name"
@@ -66,7 +102,9 @@ const Register = () => {
           onChange={(e) => setName(e.target.value)}
         />
 
-        <label htmlFor="email">Email:</label>
+        <label htmlFor="email">
+          Email:
+        </label>
 
         <input
           id="email"
@@ -78,7 +116,9 @@ const Register = () => {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <label htmlFor="password">Password:</label>
+        <label htmlFor="password">
+          Password:
+        </label>
 
         <input
           id="password"
@@ -103,17 +143,25 @@ const Register = () => {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
+
         {error && (
           <p className="text-red-500 text-sm text-center">
             {error}
           </p>
         )}
 
+        {success && (
+          <p className="text-green-600 text-sm text-center">
+            {success}
+          </p>
+        )}
+
         <button
           type="submit"
-          className="bg-blue-500 text-white p-2 w-full rounded mt-2"
+          disabled={loading}
+          className="bg-blue-500 text-white p-2 w-full rounded mt-2 disabled:opacity-50"
         >
-          Register
+          {loading ? "Registering..." : "Register"}
         </button>
       </form>
     </div>
