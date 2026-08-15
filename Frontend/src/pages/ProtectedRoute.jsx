@@ -8,10 +8,7 @@ const ProtectedRoute = ({children}) => {
         
             const checkAuth=async ()=>{
                 try {
-        const response= await axios.get("http://localhost:5001/api/auth/profile",{
-            withCredentials:true
-
-        })
+        const response= api.get("/api/auth/profile")
     setisAuthenticated(true)
     }
          catch (error) {

@@ -1,5 +1,5 @@
 import { useState } from "react"
-import axios from "axios"
+import api from "../api/api"
 import { useNavigate } from "react-router-dom"
 import Dashboard from "./Dashboard"
 const Login = () => {
@@ -28,13 +28,10 @@ const Login = () => {
     }
 
     console.log("Login form is valid")
-    const response= await axios.post("http://localhost:5001/api/auth/login",{
-      email,
-      password
-    },
-  {
-          withCredentials: true,
-        })
+    const response=  await api.post("/api/auth/login", {
+        email,
+        password,
+      })
         navigate("/Dashboard")
   }
 

@@ -1,6 +1,12 @@
 import { useState } from "react"
-import axios from "axios"
+import api from "../api/api"
 import { useNavigate } from "react-router-dom"
+import {
+  isRequired,
+  isValidEmail,
+  isValidPasswordLength,
+  doPasswordsMatch,
+} from "../utils/validation"
 
 const Register = () => {
   const [name, setName] = useState("")
@@ -10,35 +16,31 @@ const Register = () => {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
   const [loading, setLoading] = useState(false)
-  const navigate=useNavigate()
+
+  const navigate = useNavigate()
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
     setError("")
     setSuccess("")
 
-    // Required fields validation
-    if (!name || !email || !password || !confirmPassword) {
+    if (!isRequired(name, email, password, confirmPassword)) {
       setError("All fields are required")
       return
     }
 
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-    if (!emailRegex.test(email)) {
+    if (!isValidEmail(email)) {
       setError("Please enter a valid email address")
       return
     }
 
-    // Password length validation
-    if (password.length < 6) {
+    if (!isValidPasswordLength(password)) {
       setError("Password must be at least 6 characters")
       return
     }
 
-    // Password match validation
-    if (password !== confirmPassword) {
+    if (!doPasswordsMatch(password, confirmPassword)) {
       setError("Passwords do not match")
       return
     }
@@ -46,38 +48,31 @@ const Register = () => {
     try {
       setLoading(true)
 
-      const response = await axios.post(
-        "http://localhost:5001/api/auth/register",
-        {
-          name,
-          email,
-          password,
-        },
-        {
-          withCredentials: true,
-        }
-      )
-
+      const response =  await api.post("/api/auth/register", {
+        name,
+        email,
+        password,
+      })
       console.log(response.data)
 
       setSuccess("Registration successful")
-     
-      // Clear form
+
       setName("")
       setEmail("")
       setPassword("")
       setConfirmPassword("")
+
+      navigate("/login")
     } catch (error) {
       console.error(error)
 
       setError(
         error.response?.data?.message ||
-        "Registration failed. Please try again."
+          "Registration failed. Please try again."
       )
     } finally {
       setLoading(false)
     }
-     navigate("/login")
   }
 
   return (
@@ -145,7 +140,6 @@ const Register = () => {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
-
         {error && (
           <p className="text-red-500 text-sm text-center">
             {error}
@@ -169,5 +163,4 @@ const Register = () => {
     </div>
   )
 }
-
 export default Register

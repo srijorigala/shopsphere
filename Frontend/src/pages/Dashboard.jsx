@@ -1,8 +1,10 @@
-
-
+import Logout from "./Logout"
 const Dashboard = () => {
   return (
-    <div>Dashboard</div>
+
+    <div>Dashboard
+      <Logout/>
+    </div>
   )
 }
 
