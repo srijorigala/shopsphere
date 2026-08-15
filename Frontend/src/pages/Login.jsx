@@ -1,11 +1,12 @@
 import { useState } from "react"
 import axios from "axios"
-
+import { useNavigate } from "react-router-dom"
+import Dashboard from "./Dashboard"
 const Login = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
-
+  const navigate= useNavigate()
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -34,6 +35,7 @@ const Login = () => {
   {
           withCredentials: true,
         })
+        navigate("/Dashboard")
   }
 
   return (

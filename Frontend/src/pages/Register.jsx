@@ -1,5 +1,6 @@
 import { useState } from "react"
 import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 const Register = () => {
   const [name, setName] = useState("")
@@ -9,7 +10,7 @@ const Register = () => {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
   const [loading, setLoading] = useState(false)
-
+  const navigate=useNavigate()
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -60,7 +61,7 @@ const Register = () => {
       console.log(response.data)
 
       setSuccess("Registration successful")
-
+     
       // Clear form
       setName("")
       setEmail("")
@@ -76,6 +77,7 @@ const Register = () => {
     } finally {
       setLoading(false)
     }
+     navigate("/login")
   }
 
   return (
