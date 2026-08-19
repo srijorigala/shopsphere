@@ -1,6 +1,8 @@
 const express = require("express");
 const authRoutes = require("./routes/authRoutes");
+const planRoutes = require("./routes/planRoutes")
 const cookieParser = require("cookie-parser");
+const adminPlanRoutes = require("./routes/adminPlanRoutes")
 const cors=require("cors")
 const app = express();
 
@@ -18,6 +20,7 @@ app.use(
 )
 // Authentication routes
 app.use("/api/auth", authRoutes);
-
+app.use("/api/admin/plans", adminPlanRoutes)
+app.use("/api/plans", planRoutes)
 
 module.exports = app;
